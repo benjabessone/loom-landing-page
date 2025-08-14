@@ -130,7 +130,7 @@ html, body, .hero-grid::before, .chat-message {
 }
 
 body {
-    font-family: 'Satoshi', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: #0a0a14;
     background-image: url('../images/fondo.png');
     background-attachment: fixed;
@@ -163,7 +163,7 @@ h1, h2, h3, h4 {
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 1rem;
-    font-family: 'Satoshi', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 h1 {
