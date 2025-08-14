@@ -1,47 +1,19 @@
 // Función de desplazamiento suave mejorada con mejor rendimiento
-function smoothScroll(target, offset = 60) {
+function smoothScroll(target, offset = 80) {
     const element = document.querySelector(target);
     if (!element) return;
     
-    // Usar la API nativa si está disponible para mejor rendimiento
-    if ('scrollBehavior' in document.documentElement.style) {
-        const header = document.querySelector('header');
-        const headerHeight = header ? header.offsetHeight : offset;
-        const targetPosition = element.offsetTop - headerHeight;
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
-        return;
-    }
-    
-    // Fallback para navegadores más antiguos
+    // Calcular posición con offset del header
     const header = document.querySelector('header');
     const headerHeight = header ? header.offsetHeight : offset;
     const targetPosition = element.offsetTop - headerHeight;
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    const duration = Math.min(800, Math.abs(distance) * 0.5); // Duración adaptativa
-    let start = null;
-
-    function animation(currentTime) {
-        if (start === null) start = currentTime;
-        const timeElapsed = currentTime - start;
-        const progress = Math.min(timeElapsed / duration, 1);
-        
-        const ease = easeInOutQuad(progress);
-        window.scrollTo(0, startPosition + distance * ease);
-        
-        if (timeElapsed < duration) {
-            requestAnimationFrame(animation);
-        }
-    }
     
-    function easeInOutQuad(t) {
-        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-    }
-    
-    requestAnimationFrame(animation);
+    // Usar scroll suave nativo
+    window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+    });
+    return;
 }
 
 // Esperar a que el DOM esté completamente cargado
