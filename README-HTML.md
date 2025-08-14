@@ -12,7 +12,7 @@ loom-clean/
 ├── js/
 │   └── script.js          # JavaScript funcional
 ├── images/
-│   ├── Loom-logo-prueba.png
+│   ├── Logo.png
 │   └── fondo.png
 ├── especialidades/
 │   ├── diseno-personalizado.html

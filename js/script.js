@@ -47,6 +47,9 @@ function smoothScroll(target, offset = 60) {
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Inicializar animaciones de scroll
+    initScrollAnimations();
+    
     // Mobile menu toggle optimizado
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
@@ -431,4 +434,85 @@ function showNotification(title, message, type = 'success') {
     document.body.appendChild(notification);
     
     // No auto-remover, solo permitir cierre manual
+}
+
+// Función para inicializar animaciones de scroll
+function initScrollAnimations() {
+    // Crear observer para animaciones de entrada
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal');
+                entry.target.classList.remove('initial-hidden');
+            }
+        });
+    }, observerOptions);
+    
+    // Aplicar animaciones iniciales a elementos específicos
+    const animatedElements = [
+        { selector: '.hero h1', animation: 'fade-in-up', delay: 'delay-1' },
+        { selector: '.hero p', animation: 'fade-in-up', delay: 'delay-2' },
+        { selector: '.cta-button', animation: 'bounce-in', delay: 'delay-3' },
+        { selector: '.service-card', animation: 'fade-in-up', delay: '' },
+        { selector: '.feature-item', animation: 'fade-in-left', delay: '' },
+        { selector: '.process-step', animation: 'fade-in-right', delay: '' },
+        { selector: '.testimonial', animation: 'fade-in-up', delay: '' },
+        { selector: '.footer-logo', animation: 'float-animation', delay: '' }
+    ];
+    
+    animatedElements.forEach((item, index) => {
+        const elements = document.querySelectorAll(item.selector);
+        elements.forEach((element, elementIndex) => {
+            // Agregar clase inicial oculta
+            element.classList.add('initial-hidden');
+            
+            // Agregar animación
+            element.classList.add(item.animation);
+            
+            // Agregar delay si se especifica
+            if (item.delay) {
+                element.classList.add(item.delay);
+            } else if (elements.length > 1) {
+                // Agregar delay progresivo para múltiples elementos
+                const delayClass = `delay-${Math.min(elementIndex + 1, 5)}`;
+                element.classList.add(delayClass);
+            }
+            
+            // Observar el elemento
+            observer.observe(element);
+        });
+    });
+    
+    // Animaciones especiales para elementos específicos
+    const logo = document.querySelector('.header-logo');
+    if (logo) {
+        logo.classList.add('pulse-animation');
+    }
+    
+    // Animación de hover mejorada para botones
+    const buttons = document.querySelectorAll('.btn, .cta-button');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Animación de parallax suave para el hero
+    const hero = document.querySelector('.hero');
+    if (hero) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            hero.style.transform = `translateY(${rate}px)`;
+        });
+    }
 }
