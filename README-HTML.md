@@ -5,7 +5,7 @@ Esta es la versión HTML estática del sitio web de Loom, convertida desde el pr
 ## 🚀 Estructura del Proyecto
 
 ```
-loom-html/
+loom-clean/
 ├── index.html              # Página principal
 ├── css/
 │   └── styles.css         # Estilos CSS principales
@@ -37,7 +37,7 @@ loom-html/
 - **CSS3**: Variables, Grid, Flexbox, Animaciones
 - **JavaScript ES6+**: Funcionalidades interactivas
 - **Font Awesome**: Iconografía
-- **Google Fonts**: Tipografías (Poppins, Inter)
+- **Google Fonts**: Tipografía Inter
 
 ## 🌐 Cómo Ejecutar
 
