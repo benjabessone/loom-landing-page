@@ -455,13 +455,11 @@ function initScrollAnimations() {
     
     // Aplicar animaciones iniciales a elementos específicos
     const animatedElements = [
-        { selector: '.hero h1', animation: 'fade-in-up', delay: 'delay-1' },
-        { selector: '.hero p', animation: 'fade-in-up', delay: 'delay-2' },
+        { selector: '.hero-title', animation: 'fade-in-up', delay: 'delay-1' },
+        { selector: '.hero-description', animation: 'fade-in-up', delay: 'delay-2' },
         { selector: '.cta-button', animation: 'bounce-in', delay: 'delay-3' },
-        { selector: '.service-card', animation: 'fade-in-up', delay: '' },
-        { selector: '.feature-item', animation: 'fade-in-left', delay: '' },
-        { selector: '.process-step', animation: 'fade-in-right', delay: '' },
-        { selector: '.testimonial', animation: 'fade-in-up', delay: '' },
+        { selector: '.feature-card', animation: 'fade-in-up', delay: '' },
+        { selector: '.step', animation: 'fade-in-right', delay: '' },
         { selector: '.footer-logo', animation: 'float-animation', delay: '' }
     ];
     
