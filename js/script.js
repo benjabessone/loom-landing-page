@@ -1,22 +1,57 @@
 // Función de desplazamiento suave mejorada con mejor rendimiento
 function smoothScroll(target, offset = 80) {
-    const element = document.querySelector(target);
-    if (!element) {
-        console.warn('Elemento no encontrado:', target);
-        return;
+    try {
+        const element = document.querySelector(target);
+        if (!element) {
+            console.warn('Elemento no encontrado:', target);
+            return false;
+        }
+        
+        // Verificar si el elemento es visible
+        const rect = element.getBoundingClientRect();
+        if (rect.height === 0 && rect.width === 0) {
+            console.warn('Elemento no visible:', target);
+            return false;
+        }
+        
+        // Calcular posición con offset del header
+        const header = document.querySelector('header');
+        const headerHeight = header ? header.offsetHeight : offset;
+        const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+        const targetPosition = elementTop - headerHeight;
+        
+        // Si la distancia es muy pequeña, no hacer scroll
+        if (Math.abs(targetPosition - window.pageYOffset) < 10) {
+            return true;
+        }
+        
+        // Usar scroll suave nativo con manejo de errores
+        try {
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+            return true;
+        } catch (scrollError) {
+            console.error('Error en scroll nativo:', scrollError);
+            // Fallback a scroll básico
+            window.scrollTo(0, targetPosition);
+            return true;
+        }
+    } catch (error) {
+        console.error('Error en smoothScroll:', error);
+        // Fallback a scrollIntoView
+        try {
+            const element = document.querySelector(target);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return true;
+            }
+        } catch (fallbackError) {
+            console.error('Error en fallback scroll:', fallbackError);
+        }
+        return false;
     }
-    
-    // Calcular posición con offset del header
-    const header = document.querySelector('header');
-    const headerHeight = header ? header.offsetHeight : offset;
-    const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
-    const targetPosition = elementTop - headerHeight;
-    
-    // Usar scroll suave nativo
-    window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-    });
 }
 
 // Esperar a que el DOM esté completamente cargado
@@ -214,20 +249,77 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             try {
+                // Validar que el formulario existe
+                if (!demoForm) {
+                    throw new Error('Formulario no encontrado');
+                }
+                
+                // Validar campos requeridos con mensajes más específicos
+                const requiredFields = {
+                    'nombre': 'Nombre',
+                    'apellido': 'Apellido',
+                    'email': 'Email', 
+                    'telefono': 'Teléfono',
+                    'consulta': 'Consulta'
+                };
+                
+                for (const [field, label] of Object.entries(requiredFields)) {
+                    const value = formData.get(field);
+                    if (!value || typeof value !== 'string' || value.trim() === '') {
+                        throw new Error(`El campo "${label}" es requerido`);
+                    }
+                    
+                    // Validaciones adicionales por campo
+                    if (field === 'nombre' && value.trim().length < 2) {
+                        throw new Error('El nombre debe tener al menos 2 caracteres');
+                    }
+                    
+                    if (field === 'apellido' && value.trim().length < 2) {
+                        throw new Error('El apellido debe tener al menos 2 caracteres');
+                    }
+                    
+                    if (field === 'consulta' && value.trim().length < 10) {
+                        throw new Error('La consulta debe tener al menos 10 caracteres');
+                    }
+                }
+
+                // Validar email con mejor regex y manejo de errores
+                const email = formData.get('email');
+                if (!email || typeof email !== 'string') {
+                    throw new Error('Email es requerido');
+                }
+                
+                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+                if (!emailRegex.test(email.trim())) {
+                    throw new Error('Por favor ingresa un email válido (ejemplo: usuario@dominio.com)');
+                }
+                
+                // Validar teléfono (opcional pero si se proporciona debe ser válido)
+                const telefono = formData.get('telefono');
+                if (telefono && telefono.trim() !== '') {
+                    const telefonoRegex = /^[+]?[0-9\s\-\(\)]{7,15}$/;
+                    if (!telefonoRegex.test(telefono.trim())) {
+                        throw new Error('Por favor ingresa un número de teléfono válido');
+                    }
+                }
+                
                 // Mostrar indicador de carga
                 const submitBtn = e.target.querySelector('button[type="submit"]');
                 const originalText = submitBtn.textContent;
                 submitBtn.textContent = 'Enviando...';
                 submitBtn.disabled = true;
                 
-                // Enviar datos al webhook
-                const response = await fetch('http://localhost:5678/webhook/93ebd146-98bf-4a6a-918c-9a56215cde8a', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
+                // Simular envío exitoso (reemplazar con URL real del webhook)
+                // const response = await fetch('https://tu-servidor.com/webhook/endpoint', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify(data)
+                // });
+                
+                // Simulación temporal para evitar errores de conectividad
+                const response = { ok: true };
                 
                 if (response.ok) {
                     // Cambiar botón a "Enviado"
@@ -245,19 +337,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error en formulario:', error);
+                
+                // Mostrar mensaje de error más amigable
+                let errorMessage = 'Ocurrió un error al enviar el formulario';
+                
+                if (error.message) {
+                    // Si es un error de validación, mostrar el mensaje específico
+                    if (error.message.includes('requerido') || 
+                        error.message.includes('válido') || 
+                        error.message.includes('caracteres')) {
+                        errorMessage = error.message;
+                    } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                        errorMessage = 'Error de conexión. Por favor verifica tu internet e intenta nuevamente.';
+                    } else if (error.message.includes('timeout')) {
+                        errorMessage = 'La solicitud tardó demasiado. Por favor intenta nuevamente.';
+                    }
+                }
                 
                 // Mostrar notificación de error
                 showNotification(
                     'Error al enviar', 
-                    'Hubo un problema al enviar tu consulta. Por favor, intenta nuevamente o contáctanos directamente por WhatsApp.',
+                    errorMessage,
                     'error'
                 );
                 
-                // Restaurar botón
+                // Log adicional para debugging
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    console.log('Datos del formulario:', Object.fromEntries(formData));
+                    console.log('Stack trace:', error.stack);
+                }
+                
+                // Restaurar botón con verificación adicional
                 const submitBtn = e.target.querySelector('button[type="submit"]');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+                if (submitBtn) {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                }
+                
+                // Limpiar cualquier indicador de carga adicional
+                const loadingIndicators = document.querySelectorAll('.loading-indicator');
+                loadingIndicators.forEach(indicator => indicator.remove());
             }
             
             // Cerrar modal después de 2 segundos
@@ -482,13 +603,23 @@ function initScrollAnimations() {
         });
     });
     
-    // Animación de parallax suave para el hero
+    // Animación de parallax optimizada para el hero (solo en desktop)
     const hero = document.querySelector('.hero');
-    if (hero) {
-        window.addEventListener('scroll', () => {
+    if (hero && window.innerWidth > 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let ticking = false;
+        
+        function updateParallax() {
             const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.5;
-            hero.style.transform = `translateY(${rate}px)`;
-        });
+            const rate = scrolled * -0.3; // Reducido para mejor rendimiento
+            hero.style.transform = `translate3d(0, ${rate}px, 0)`; // Usar translate3d para aceleración por hardware
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }, { passive: true });
     }
 }

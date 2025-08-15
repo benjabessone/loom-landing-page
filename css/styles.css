@@ -1340,7 +1340,8 @@ footer {
 
 .hero-badge i {
     font-size: 0.8rem;
-    animation: slideRight 2s infinite;
+    animation: slideRight 3s ease-in-out infinite;
+    will-change: transform; /* Optimización para animaciones */
 }
 
 @keyframes slideRight {
