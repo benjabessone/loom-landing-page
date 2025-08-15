@@ -466,11 +466,7 @@ function initScrollAnimations() {
         });
     });
     
-    // Animaciones especiales para elementos específicos
-    const logo = document.querySelector('.header-logo');
-    if (logo) {
-        logo.classList.add('pulse-animation');
-    }
+    // Animaciones especiales para elementos específicos removidas
     
     // Animación de hover mejorada para botones
     const buttons = document.querySelectorAll('.btn, .cta-button');
