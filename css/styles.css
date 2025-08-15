@@ -972,7 +972,8 @@ footer {
     }
     
     header {
-        padding: 15px 0;
+        padding: 8px 0;
+        height: 60px;
     }
     
     .logo {
@@ -980,7 +981,7 @@ footer {
     }
     
     .header-logo {
-        height: 40px;
+        height: 80px;
         width: auto;
     }
     
@@ -1053,7 +1054,7 @@ footer {
     }
     
     .header-logo {
-        height: 40px;
+        height: 80px;
         width: auto;
     }
     
@@ -1142,10 +1143,10 @@ footer {
     }
     
     .header-logo {
-        height: 40px;
+        height: 70px;
         width: auto;
     }
-    
+
     .menu-toggle {
         width: 22px;
         height: 22px;
