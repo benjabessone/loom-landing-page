@@ -970,14 +970,6 @@ footer {
         top: 70px;
     }
     
-    header {
-        padding: 15px 0;
-    }
-    
-    .logo {
-        font-size: 1.3rem;
-    }
-    
     .header-logo {
         height: 45px;
         width: auto;
@@ -1045,10 +1037,6 @@ footer {
         width: 35px;
         height: 35px;
         font-size: 0.9rem;
-    }
-    
-    .logo {
-        font-size: 1.2rem;
     }
     
     .header-logo {
@@ -1134,10 +1122,6 @@ footer {
     
     .feature-card {
         padding: 18px 12px;
-    }
-    
-    .logo {
-        font-size: 1.1rem;
     }
     
     .header-logo {
