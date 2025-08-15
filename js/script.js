@@ -165,8 +165,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Modal de demostración
-    const demoModal = document.getElementById('demoModal');
-    const openDemoBtn = document.getElementById('openDemo');
+    const demoModal = document.getElementById('demo-modal');
+    const openDemoBtn = document.getElementById('demo-btn');
     const closeDemoBtn = document.querySelector('.close-modal');
     
     if (openDemoBtn && demoModal) {
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Manejar envío del formulario
-    const demoForm = document.getElementById('demoForm');
+    const demoForm = document.getElementById('demo-form');
     if (demoForm) {
         demoForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -410,7 +410,7 @@ function showNotification(title, message, type = 'success') {
 
 // Función para inicializar animaciones de scroll
 function initScrollAnimations() {
-    // Crear observer para animaciones de entrada
+    // Crear observer unificado para animaciones de entrada
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -419,8 +419,12 @@ function initScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('reveal');
-                entry.target.classList.remove('initial-hidden');
+                // Usar el sistema 'animate' para consistencia
+                entry.target.classList.add('animate');
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                // Dejar de observar una vez animado
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
@@ -438,8 +442,12 @@ function initScrollAnimations() {
     animatedElements.forEach((item, index) => {
         const elements = document.querySelectorAll(item.selector);
         elements.forEach((element, elementIndex) => {
-            // Agregar clase inicial oculta
-            element.classList.add('initial-hidden');
+            // Configurar estado inicial
+            if (!element.classList.contains('animate')) {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            }
             
             // Agregar animación
             element.classList.add(item.animation);
