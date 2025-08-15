@@ -140,6 +140,7 @@ body {
     color: var(--text);
     line-height: 1.6;
     overflow-x: hidden;
+    padding-top: 80px; /* Compensar header fijo */
 }
 
 /* Patrón alternado de fondos */
@@ -275,12 +276,12 @@ nav {
 
 
 .footer-logo {
-    height: 80px;
+    height: 60px;
     width: auto;
     border-radius: 8px;
-    position: relative;
     object-fit: contain;
-    margin: 1rem;
+    margin: 0.5rem 0;
+    display: block;
 }
 
 .chat-button-logo {
@@ -1411,14 +1412,7 @@ footer {
     }
 }
 
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
+/* Keyframe float removido - ya no se usa */
 
 /* Clases de animación */
 .fade-in-up {
@@ -1439,9 +1433,7 @@ footer {
 
 
 
-.float-animation {
-    animation: float 3s ease-in-out infinite;
-}
+/* Animación float removida para evitar distracciones */
 
 /* Animaciones con delay */
 .delay-1 { animation-delay: 0.1s; }

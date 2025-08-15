@@ -1,19 +1,22 @@
 // Función de desplazamiento suave mejorada con mejor rendimiento
 function smoothScroll(target, offset = 80) {
     const element = document.querySelector(target);
-    if (!element) return;
+    if (!element) {
+        console.warn('Elemento no encontrado:', target);
+        return;
+    }
     
     // Calcular posición con offset del header
     const header = document.querySelector('header');
     const headerHeight = header ? header.offsetHeight : offset;
-    const targetPosition = element.offsetTop - headerHeight;
+    const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+    const targetPosition = elementTop - headerHeight;
     
     // Usar scroll suave nativo
     window.scrollTo({
         top: targetPosition,
         behavior: 'smooth'
     });
-    return;
 }
 
 // Esperar a que el DOM esté completamente cargado
@@ -435,8 +438,7 @@ function initScrollAnimations() {
         { selector: '.hero-description', animation: 'fade-in-up', delay: 'delay-2' },
         { selector: '.cta-button', animation: 'bounce-in', delay: 'delay-3' },
         { selector: '.feature-card', animation: 'fade-in-up', delay: '' },
-        { selector: '.step', animation: 'fade-in-right', delay: '' },
-        { selector: '.footer-logo', animation: 'float-animation', delay: '' }
+        { selector: '.step', animation: 'fade-in-right', delay: '' }
     ];
     
     animatedElements.forEach((item, index) => {
